@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<sklep>
+    <produkt typ="płyta">
+        <parametry>
+            <tytuł>Unloved</tytuł>
+            <wykonawca>Maciej Obara Quartet</wykonawca>
+            <gatunek>jazz</gatunek>
+            <cena>60</cena>
+        </parametry>
+    </produkt>
+    <produkt typ="płyta" klucz="20">
+        <identyfikator>plyta20</identyfikator>
+        <parametry>
+            <tytuł>Smooth Jazz Cafe. Volume 17</tytuł>
+            <wykonawca>Various Artists</wykonawca>
+            <gatunek>jazz</gatunek>
+            <cena>50</cena>
+        </parametry>
+    </produkt>
+    <produkt typ="komiks" klucz="30">
+        <identyfikator>komiks30</identyfikator>
+        <parametry>
+            <tytuł>Batman</tytuł>
+            <podtytuł>batman śmierć w rodzinie</podtytuł>
+        </parametry>
+    </produkt>
+    <produkt klucz="40">
+        <identyfikator>komiks40</identyfikator>
+    </produkt>
+</sklep>
