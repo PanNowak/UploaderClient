@@ -19,11 +19,11 @@ import java.io.InputStream;
 public interface Parser {
 
     /**
-     * Reads data from the provided {@code InputStream} and returns {@code Flowable}
-     * of {@code ProductCandidate}s. Since backing data is either a lazy stream
-     * or a collection, returned {@code Flowable} can and must provide full backpressure
-     * support. Failure to do so may result in {@link MissingBackpressureException}
-     * being thrown.
+     * Returns {@code Flowable} of {@code ProductCandidate}s that upon subscription
+     * starts to read data from the provided {@code InputStream}. Since backing data
+     * is either a lazy stream or a collection, returned {@code Flowable}
+     * can and must provide full backpressure support. Failure to do so may result
+     * in {@link MissingBackpressureException} being thrown somewhere downstream.
      * @param dataSource {@code InputStream} to read data from, <b>must not be null</b>
      * @return {@code Flowable} of {@code ProductCandidate}s
      */
