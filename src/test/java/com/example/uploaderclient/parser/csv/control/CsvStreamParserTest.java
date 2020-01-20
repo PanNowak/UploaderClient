@@ -1,14 +1,12 @@
 package com.example.uploaderclient.parser.csv.control;
 
-import java.io.InputStream;
-
+import com.example.uploaderclient.parser.core.entity.ProductCandidate;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import io.reactivex.Flowable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.example.uploaderclient.parser.core.entity.ProductCandidate;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-
-import io.reactivex.Flowable;
+import java.io.InputStream;
 
 class CsvStreamParserTest {
 

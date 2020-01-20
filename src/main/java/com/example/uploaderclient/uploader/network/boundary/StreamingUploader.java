@@ -1,8 +1,8 @@
 package com.example.uploaderclient.uploader.network.boundary;
 
-import com.example.uploaderclient.uploader.network.entity.UploadFinishedEvent;
-import io.reactivex.Observable;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
+import io.reactivex.Completable;
 
 /**
  * Uploader that transfers data in a streaming manner, i.e. without loading
@@ -12,12 +12,11 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 public interface StreamingUploader {
 
     /**
-     * Returns {@link Observable} that (when subscribed to) sends a request
+     * Returns {@link Completable} that (when subscribed to) sends a request
      * whose {@code OutputStream} is written directly to by provided
-     * {@link StreamingResponseBody}. When upload finishes successfully,
-     * {@link UploadFinishedEvent} is emitted by provided {@code Observable}.
+     * {@link StreamingResponseBody}.
      * @param dataSource a callback for writing to the request body.
-     * @return {@code Observable} that emits {@code UploadFinishedEvent}
+     * @return {@code Completable} representing upload state
      */
-    Observable<UploadFinishedEvent> send(StreamingResponseBody dataSource);
+    Completable send(StreamingResponseBody dataSource);
 }

@@ -33,7 +33,7 @@ final class DefaultParsingService implements ParsingService {
     public Flowable<ParsingResult> parse(DataSource dataSource) {
         return Flowable.fromCallable(dataSource::openStream)
                 .concatMap(parser::read)
-//                .doOnNext(p ->  System.out.println("Reading:" + p + " on " + Thread.currentThread().getName()))
+                .doOnNext(p ->  System.out.println("Reading:" + p + " on " + Thread.currentThread().getName()))
                 .compose(addParsingInfo(dataSource.getName()))
                 .map(validator::validate)
                 .map(this::getParsingResult);
@@ -41,8 +41,9 @@ final class DefaultParsingService implements ParsingService {
 
     private FlowableTransformer<ProductCandidate, ProductCandidate> addParsingInfo(String sourceName) {
         return productCandidates -> productCandidates
-                .doOnSubscribe(subscription -> log.info("Parsing of '{}' started.", sourceName))
-                .doOnComplete(() -> log.info("Parsing of '{}' ended.", sourceName))
+                .doOnSubscribe(subscription -> log.info("Parsing of data from '{}' started.", sourceName))
+                .doOnComplete(() -> log.info("Parsing of data from '{}' ended.", sourceName))
+                .doOnCancel(() -> log.info("Parsing of data from '{}' was canceled.", sourceName))
                 .onErrorResumeNext(exceptionWithSourceNameMapper(sourceName));
     }
 

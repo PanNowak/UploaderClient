@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane prefHeight="101.0" prefWidth="478.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uploaderclient.gui.control.FileUploadController">
+    <VBox fx:id="windowPane" prefHeight="131.0" prefWidth="478.0" spacing="20.0">
+        <StackPane.margin>
+            <Insets />
+        </StackPane.margin>
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        </padding>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="464.0" minWidth="10.0" prefWidth="300.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="464.0" minWidth="10.0" prefWidth="80.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <Label prefHeight="17.0" prefWidth="88.0" text="Files to upload" GridPane.columnIndex="0" />
+            <TextField fx:id="dataSourcesTextField" prefHeight="25.0" prefWidth="325.0" GridPane.columnIndex="1" />
+            <Button onAction="#selectFilesToUpload" text="Open..." GridPane.columnIndex="2" />
+        </GridPane>
+        <ButtonBar prefHeight="25.0" prefWidth="458.0">
+            <buttons>
+                <Button onAction="#runUpload" prefHeight="25.0" prefWidth="95.0" text="Upload files" />
+            </buttons>
+        </ButtonBar>
+    </VBox>
+    <ProgressIndicator fx:id="progressIndicator" visible="false">
+        <StackPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        </StackPane.margin>
+    </ProgressIndicator>
+</StackPane>

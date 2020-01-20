@@ -1,13 +1,9 @@
-package com.example.uploaderclient.uploader.writer.entity;
+package com.example.uploaderclient.api.entity;
 
-import com.example.uploaderclient.api.boundary.UploadInfo;
-import com.google.common.collect.ImmutableMap;
 import lombok.Value;
 
-import java.util.Map;
-
 @Value
-public final class Statistics implements UploadInfo {
+public final class Statistics {
 
     public static Statistics empty() {
         return new Statistics(0, 0, 0);
@@ -40,18 +36,5 @@ public final class Statistics implements UploadInfo {
 
         return new Statistics(numberOfSuccessfullyParsedObjects,
                 numberOfParsingFailures, totalNumberOfProblems);
-    }
-
-    @Override
-    public String header() {
-        return "Current statistics";
-    }
-
-    @Override
-    public Map<String, String> body() {
-        return ImmutableMap.of(
-                "Number of successfully parsed objects", String.valueOf(numberOfSuccessfullyParsedObjects),
-                "Number of parsing failures", String.valueOf(numberOfParsingFailures),
-                "Total number of problems", String.valueOf(totalNumberOfProblems));
     }
 }

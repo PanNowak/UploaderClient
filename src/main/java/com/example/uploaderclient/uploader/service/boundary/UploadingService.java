@@ -1,7 +1,8 @@
 package com.example.uploaderclient.uploader.service.boundary;
 
-import com.example.uploaderclient.api.boundary.UploadInfo;
+import com.example.uploaderclient.api.entity.Statistics;
 import com.example.uploaderclient.parser.core.entity.ParsingResult;
+
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
@@ -14,9 +15,9 @@ public interface UploadingService {
     /**
      * Returns {@link Observable} that upon subscription reads data from the given
      * {@link Flowable}, sends them streamingly to the desired destination and
-     * periodically emits {@link UploadInfo} with information about current upload state.
+     * periodically emits {@link Statistics} with information about current upload state.
      * @param source backpressured source of {@code ParsingResult}s
      * @return {@code Observable} emitting current upload state
      */
-    Observable<UploadInfo> upload(Flowable<ParsingResult> source);
+    Observable<Statistics> upload(Flowable<ParsingResult> source);
 }

@@ -12,7 +12,7 @@ import java.io.InputStream;
  * {@link InputStream}. Implementations should strive to work in a streaming manner,
  * i.e. not loading all data into memory at once. Classes implementing this interface
  * are encouraged <b>not</b> to check whether created {@link ProductCandidate}s
- * contain all necessary infromation since validation is to be performed
+ * contain all necessary information since validation is to be performed
  * in subsequent processing stages.
  */
 @FunctionalInterface

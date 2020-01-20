@@ -1,12 +1,15 @@
 package com.example.uploaderclient.api.control;
 
-import com.example.uploaderclient.api.boundary.DataSource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.example.uploaderclient.api.boundary.DataSource;
+
+import lombok.ToString;
+
+@ToString
 public final class FileBasedSource implements DataSource {
 
     private static final String FILE_NOT_EXISTS_ERROR_MESSAGE_PATTERN = "File '%s' does not exist!'";
@@ -20,6 +23,11 @@ public final class FileBasedSource implements DataSource {
 
     @Override
     public String getName() {
+        return pathToFile.toString();
+    }
+
+    @Override
+    public String getShortName() {
         return pathToFile.getFileName().toString();
     }
 

@@ -1,8 +1,9 @@
 package com.example.uploaderclient.uploader.network.control;
 
 import com.example.uploaderclient.uploader.network.boundary.StreamingUploader;
-import com.example.uploaderclient.uploader.network.entity.UploadFinishedEvent;
-import io.reactivex.Observable;
+import io.reactivex.Completable;
+import io.reactivex.Single;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 public class DefaultUploader implements StreamingUploader {
 
@@ -30,9 +32,9 @@ public class DefaultUploader implements StreamingUploader {
     }
 
     @Override
-    public Observable<UploadFinishedEvent> send(StreamingResponseBody dataSource) {
-        return Observable.fromCallable(() -> prepareRequestCallback(dataSource))
-                .flatMap(this::sendRequestAndAwaitFinishedEvent);
+    public Completable send(StreamingResponseBody dataSource) {
+        return Single.fromCallable(() -> prepareRequestCallback(dataSource))
+                .flatMapCompletable(this::sendRequestAndAwaitFinishedEvent);
     }
 
     private RequestCallback prepareRequestCallback(StreamingResponseBody dataSource) {
@@ -42,21 +44,21 @@ public class DefaultUploader implements StreamingUploader {
         };
     }
 
-    private Observable<UploadFinishedEvent> sendRequestAndAwaitFinishedEvent(RequestCallback requestCallback) {
+    private Completable sendRequestAndAwaitFinishedEvent(RequestCallback requestCallback) {
         return restTemplate.execute(uploadUri, HttpMethod.POST, requestCallback, this::processResponse);
     }
 
-    private Observable<UploadFinishedEvent> processResponse(ClientHttpResponse response) throws IOException {
+    private Completable processResponse(ClientHttpResponse response) throws IOException {
         try (ClientHttpResponse r = response) {
             HttpStatus statusCode = r.getStatusCode();
             String statusText = r.getStatusText();
 
             if (statusCode.isError()) {
-                return Observable.error(new ResponseStatusException(statusCode, statusText));
+                return Completable.error(new ResponseStatusException(statusCode, statusText));
             }
 
-            String statusCodeValue = String.valueOf(statusCode.value());
-            return Observable.just(new UploadFinishedEvent(statusCodeValue, statusText));
+            log.info("Received response: {}", statusCode); //TODO pewnie jakiś filtr odpowiedzi
+            return Completable.complete();
         }
     }
 }

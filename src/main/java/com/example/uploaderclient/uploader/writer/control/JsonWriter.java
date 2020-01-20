@@ -1,7 +1,8 @@
 package com.example.uploaderclient.uploader.writer.control;
 
-import com.example.uploaderclient.uploader.writer.entity.Statistics;
+import com.example.uploaderclient.api.entity.Statistics;
 import com.example.uploaderclient.parser.core.entity.ParsingResult;
+import com.example.uploaderclient.uploader.service.entity.RequestWritingException;
 import com.example.uploaderclient.uploader.writer.boundary.SummarizingStreamingOutput;
 import com.example.uploaderclient.uploader.writer.boundary.Writer;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -9,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.reactivex.Flowable;
 import io.reactivex.Observer;
 import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subscribers.DisposableSubscriber;
+import io.reactivex.subscribers.SafeSubscriber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -64,29 +67,10 @@ public class JsonWriter implements Writer {
         }
 
         private void writeAllProducts(JsonGenerator generator) {
-            source.blockingSubscribe(
-                    parsingResult -> writeProductIfSuccessAndPublishStatistics(generator, parsingResult),
-                    publishSubject::onError, publishSubject::onComplete, 1);
-        }
-
-        private void writeProductIfSuccessAndPublishStatistics(JsonGenerator generator, ParsingResult parsingResult)
-                throws IOException {
-            Statistics statistics;
-            if (parsingResult.isSuccessful()) {
-                objectMapper.writeValue(generator, parsingResult.getProduct());
-//
-//                System.out.println("Writing:" + parsingResult.getProduct() + " on " + Thread.currentThread().getName());
-//                try {
-//                    Thread.sleep(3000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-                statistics = Statistics.success();
-            } else {
-                statistics = Statistics.error(parsingResult.getError().getErrorCount());
-            }
-
-            publishSubject.onNext(statistics);
+            source.repeat(3000)
+//                    .doOnCancel(() -> log.info("Flowable anulowany!"))
+                    .blockingSubscribe(new SafeSubscriber<>(
+                            new WritingSubscriber(publishSubject, generator)));
         }
 
         @Override
@@ -94,6 +78,69 @@ public class JsonWriter implements Writer {
             publishSubject.scan(Statistics.empty(), Statistics::combine)
                     .throttleLatest(100, TimeUnit.MILLISECONDS, true)
                     .subscribe(observer);
+        }
+
+        @Override
+        public void ensureOnComplete() {
+            publishSubject.onComplete();
+        }
+    }
+
+    private final class WritingSubscriber extends DisposableSubscriber<ParsingResult> {
+
+        private final PublishSubject<Statistics> publishSubject;
+        private final JsonGenerator generator;
+
+        WritingSubscriber(PublishSubject<Statistics> publishSubject, JsonGenerator generator) {
+            this.publishSubject = publishSubject;
+            this.generator = generator;
+        }
+
+        @Override
+        public void onStart() {
+            request(1);
+        }
+
+        @Override
+        public void onNext(ParsingResult parsingResult) {
+            try {
+                Statistics statistics;
+                if (parsingResult.isSuccessful()) {
+                    objectMapper.writeValue(generator, parsingResult.getProduct());
+//
+//                System.out.println("Writing:" + parsingResult.getProduct() + " on " + Thread.currentThread().getName());
+//                try {
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                    statistics = Statistics.success();
+                } else {
+                    statistics = Statistics.error(parsingResult.getError().getErrorCount());
+                }
+
+                publishSubject.onNext(statistics);
+            } catch (IOException e) {
+                throw new RequestWritingException("Exception occurred " +
+                        "during writing to request body", e);
+            }
+
+            if (!publishSubject.hasObservers()) {
+//                System.out.println(!publishSubject.hasObservers());
+                cancel();
+            }
+
+            request(1);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            publishSubject.onError(throwable);
+        }
+
+        @Override
+        public void onComplete() {
+            publishSubject.onComplete();
         }
     }
 }

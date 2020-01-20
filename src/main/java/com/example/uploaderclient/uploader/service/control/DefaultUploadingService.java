@@ -1,14 +1,14 @@
 package com.example.uploaderclient.uploader.service.control;
 
-import com.example.uploaderclient.api.boundary.UploadInfo;
+import com.example.uploaderclient.api.entity.Statistics;
 import com.example.uploaderclient.parser.core.entity.ParsingResult;
 import com.example.uploaderclient.uploader.network.boundary.StreamingUploader;
 import com.example.uploaderclient.uploader.service.boundary.UploadingService;
-import com.example.uploaderclient.uploader.network.entity.UploadFinishedEvent;
 import com.example.uploaderclient.uploader.writer.boundary.SummarizingStreamingOutput;
 import com.example.uploaderclient.uploader.writer.boundary.Writer;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +25,22 @@ class DefaultUploadingService implements UploadingService {
     }
 
     @Override
-    public Observable<UploadInfo> upload(Flowable<ParsingResult> source) {
+    public Observable<Statistics> upload(Flowable<ParsingResult> source) {
         SummarizingStreamingOutput summarizingStreamingOutput = dataWriter.write(source);
-        Observable<UploadFinishedEvent> response = uploader.send(summarizingStreamingOutput);
-        return Observable.mergeDelayError(summarizingStreamingOutput, response);
+
+        Observable<Statistics> statisticsObservable = getStatisticsObservable(summarizingStreamingOutput);
+        Observable<Statistics> responseObservable = getResponseObservable(summarizingStreamingOutput);
+
+        return Observable.mergeDelayError(statisticsObservable, responseObservable);
+    }
+
+    private Observable<Statistics> getStatisticsObservable(ObservableSource<Statistics> source) {
+        return Observable.unsafeCreate(source);
+    }
+
+    private Observable<Statistics> getResponseObservable(SummarizingStreamingOutput streamingOutput) {
+        return uploader.send(streamingOutput)
+                .doOnError(error -> streamingOutput.ensureOnComplete())
+                .toObservable();
     }
 }
