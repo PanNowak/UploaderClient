@@ -1,10 +1,9 @@
 package com.example.uploaderclient.gui.input.boundary;
 
-import java.util.List;
-
-import com.example.uploaderclient.api.boundary.DataSource;
-
+import com.example.uploaderclient.uploader.api.boundary.DataSource;
 import javafx.stage.Window;
+
+import java.util.List;
 
 @FunctionalInterface
 public interface DataProvider {

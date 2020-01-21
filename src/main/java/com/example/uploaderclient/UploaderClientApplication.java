@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 @SpringBootApplication
 public class UploaderClientApplication extends Application {
 
@@ -23,83 +25,25 @@ public class UploaderClientApplication extends Application {
 	@Override
 	public void init() {
 		springContext = SpringApplication.run(UploaderClientApplication.class);
-		fxmlLoader = new FXMLLoader();
+		fxmlLoader = new FXMLLoader(UploaderClientApplication.class
+				.getClassLoader().getResource("mainPane.fxml"));
 		fxmlLoader.setControllerFactory(springContext::getBean);
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
-		fxmlLoader.setLocation(UploaderClientApplication.class
-				.getClassLoader().getResource("mainPane.fxml"));
-
+	public void start(Stage primaryStage) throws IOException {
 		Pane rootNode = fxmlLoader.load();
 		Scene scene = new Scene(rootNode);
 
 		primaryStage.setTitle("File uploader");
 		primaryStage.setScene(scene);
-		primaryStage.setResizable(false);
+		primaryStage.setResizable(true);
+
 		primaryStage.show();
+		primaryStage.setMinWidth(primaryStage.getWidth());
+		primaryStage.setMinHeight(primaryStage.getHeight());
+		primaryStage.setMaxHeight(primaryStage.getHeight());
 	}
-
-
-//		stage.setTitle("File Chooser Sample");
-//
-//		final FileChooser fileChooser = new FileChooser();
-//
-//		final Button openButton = new Button("Open a file...");
-//		final Button runUploadButton = new Button("Upload files...");
-//
-//		JavaFxObservable.actionEventsOf(openButton)
-//				.map(e -> fileChooser.showOpenDialog(stage))
-//				.filter(Objects::nonNull)
-//				.forEach(this::openFile);
-
-//		final GridPane inputGridPane = new GridPane();
-//
-//		GridPane.setConstraints(openButton, 0, 0);
-//		GridPane.setConstraints(runUploadButton, 1, 0);
-//		inputGridPane.setHgap(6);
-//		inputGridPane.setVgap(6);
-//		inputGridPane.getChildren().addAll(openButton, runUploadButton);
-//
-//		final Pane rootGroup = new VBox(12);
-//		rootGroup.getChildren().addAll(inputGridPane);
-//		rootGroup.setPadding(new Insets(12, 12, 12, 12));
-//
-//		stage.setScene(new Scene(rootGroup));
-//		stage.show();
-//	}
-//
-//	private Desktop desktop = Desktop.getDesktop();
-//
-//	private void openFile(File file) {
-//		try {
-//			desktop.open(file);
-//		} catch (IOException ex) {
-//			ex.printStackTrace();
-//		}
-//	}
-
-//		primaryStage.setTitle("Hello world");
-//		Button button = new Button();
-//		button.setText("Run upload");
-//
-//		GridPane gridPane = new GridPane();
-//		gridPane.setAlignment(Pos.CENTER);
-//		gridPane.setHgap(10);
-//		gridPane.setVgap(10);
-//		gridPane.setPadding(new Insets(25, 25, 25, 25));
-//
-//
-////		StackPane root = new StackPane();
-////		root.getChildren().addAll(button);
-//		Scene scene = new Scene(gridPane, 300, 275);
-//		primaryStage.setScene(scene);
-//		Text actionTarget = new Text("some text");
-//
-//		gridPane.add(button, 0, 0);
-//		gridPane.add(actionTarget, 0, 1);
-
 
 	@Override
 	public void stop() {

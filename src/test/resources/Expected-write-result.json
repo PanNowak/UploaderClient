@@ -1,0 +1,22 @@
+[ {
+  "key" : "testKey",
+  "type" : "testType",
+  "identifier" : "testId",
+  "simpleAttributes" : {
+    "testKey" : "testValue"
+  }
+}, {
+  "key" : "testKey",
+  "type" : "testType",
+  "identifier" : "testId",
+  "simpleAttributes" : {
+    "testKey" : "testValue"
+  }
+}, {
+  "key" : "testKey",
+  "type" : "testType",
+  "identifier" : "testId",
+  "simpleAttributes" : {
+    "testKey" : "testValue"
+  }
+} ]
