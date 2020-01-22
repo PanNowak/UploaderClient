@@ -1,14 +1,13 @@
 package com.example.uploaderclient;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
 
@@ -26,7 +25,7 @@ public class UploaderClientApplication extends Application {
 	public void init() {
 		springContext = SpringApplication.run(UploaderClientApplication.class);
 		fxmlLoader = new FXMLLoader(UploaderClientApplication.class
-				.getClassLoader().getResource("mainPane.fxml"));
+				.getClassLoader().getResource("mainView.fxml"));
 		fxmlLoader.setControllerFactory(springContext::getBean);
 	}
 

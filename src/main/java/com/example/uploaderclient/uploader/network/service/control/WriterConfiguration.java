@@ -22,7 +22,7 @@ public class WriterConfiguration {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         RestTemplate restTemplate = restTemplateBuilder
-//                .setReadTimeout(Duration.ofSeconds(5)) //dziwne
+//                .setReadTimeout(Duration.ofSeconds(5))
 //                .setConnectTimeout(Duration.ofSeconds(5))
                 .errorHandler(new ResponseErrorHandler() {
                     @Override

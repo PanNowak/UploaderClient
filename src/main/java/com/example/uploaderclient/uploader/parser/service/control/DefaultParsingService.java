@@ -33,22 +33,23 @@ final class DefaultParsingService implements ParsingService {
     public Flowable<ParsingResult> parse(DataSource dataSource) {
         return Flowable.fromCallable(dataSource::openStream)
                 .concatMap(parser::read)
-//                .doOnNext(p ->  System.out.println("Reading:" + p + " on " + Thread.currentThread().getName()))
-                .compose(addParsingInfo(dataSource.getName()))
+                .compose(addParsingInfo(dataSource))
                 .map(validator::validate)
                 .map(this::getParsingResult);
     }
 
-    private FlowableTransformer<ProductCandidate, ProductCandidate> addParsingInfo(String sourceName) {
+    private FlowableTransformer<ProductCandidate, ProductCandidate> addParsingInfo(DataSource dataSource) {
+        String fullDataSourceName = dataSource.getName();
         return productCandidates -> productCandidates
-                .doOnSubscribe(subscription -> log.info("Parsing of data from '{}' started.", sourceName))
-                .doOnComplete(() -> log.info("Parsing of data from '{}' ended.", sourceName))
-                .doOnCancel(() -> log.info("Parsing of data from '{}' was canceled.", sourceName))
-                .onErrorResumeNext(exceptionWithSourceNameMapper(sourceName));
+                .doOnSubscribe(subscription -> log.info("Parsing of data from '{}' started.", fullDataSourceName))
+                .doOnComplete(() -> log.info("Parsing of data from '{}' ended.", fullDataSourceName))
+                .doOnCancel(() -> log.info("Parsing of data from '{}' was canceled.", fullDataSourceName))
+                .onErrorResumeNext(exceptionWithSourceNameMapper(dataSource));
     }
 
-    private Function<Throwable, Flowable<ProductCandidate>> exceptionWithSourceNameMapper(String sourceName) {
-        return originalException -> Flowable.error(new ParsingException(sourceName, originalException));
+    private Function<Throwable, Flowable<ProductCandidate>> exceptionWithSourceNameMapper(DataSource dataSource) {
+        return originalException -> Flowable.error(
+                new ParsingException(dataSource.getName(), dataSource.getShortName(),  originalException));
     }
 
     private ParsingResult getParsingResult(Validation<Error, Product> productValidation) {

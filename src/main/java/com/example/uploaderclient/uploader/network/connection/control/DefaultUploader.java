@@ -53,11 +53,11 @@ public class DefaultUploader implements StreamingUploader {
             HttpStatus statusCode = r.getStatusCode();
             String statusText = r.getStatusText();
 
+            log.info("Received response: {}", statusCode); //TODO pewnie jakiś filtr odpowiedzi
             if (statusCode.isError()) {
                 return Completable.error(new ResponseStatusException(statusCode, statusText));
             }
 
-            log.info("Received response: {}", statusCode); //TODO pewnie jakiś filtr odpowiedzi
             return Completable.complete();
         }
     }

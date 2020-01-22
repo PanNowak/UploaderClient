@@ -6,7 +6,7 @@
 
 <StackPane xmlns="http://javafx.com/javafx/10.0.2-internal"
            xmlns:fx="http://javafx.com/fxml/1" fx:id="windowPane"
-           fx:controller="com.example.uploaderclient.gui.control.FileUploadController">
+           fx:controller="com.example.uploaderclient.gui.main_view.control.FileUploadController">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>

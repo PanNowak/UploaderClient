@@ -7,7 +7,7 @@ import com.example.uploaderclient.uploader.api.control.ProcessingService;
 import com.example.uploaderclient.uploader.parser.core.entity.FileType;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Window;
+import javafx.stage.Stage;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +31,8 @@ public class FilesProvider implements DataProvider {
     }
 
     @Override
-    public List<DataSource> getDataSources(Window container) {
-        return CollectionUtils.emptyIfNull(fileChooser.showOpenMultipleDialog(container)).stream()
+    public List<DataSource> getDataSources(Stage primaryStage) {
+        return CollectionUtils.emptyIfNull(fileChooser.showOpenMultipleDialog(primaryStage)).stream()
                 .map(File::toPath)
                 .map(FileBasedSource::new)
                 .collect(Collectors.toList());

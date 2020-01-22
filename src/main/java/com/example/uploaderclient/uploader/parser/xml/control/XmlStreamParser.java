@@ -1,34 +1,26 @@
 package com.example.uploaderclient.uploader.parser.xml.control;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.Callable;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.example.uploaderclient.uploader.parser.core.boundary.Parser;
 import com.example.uploaderclient.uploader.parser.core.boundary.SupportedTypes;
 import com.example.uploaderclient.uploader.parser.core.entity.FileType;
 import com.example.uploaderclient.uploader.parser.core.entity.ProductCandidate;
 import com.example.uploaderclient.uploader.parser.xml.entity.XmlProduct;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
 import io.reactivex.Emitter;
 import io.reactivex.Flowable;
 import io.reactivex.functions.BiConsumer;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import static javax.xml.stream.XMLStreamConstants.ATTRIBUTE;
-import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
-import static javax.xml.stream.XMLStreamConstants.END_DOCUMENT;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_DOCUMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.Callable;
+
+import static javax.xml.stream.XMLStreamConstants.*;
 
 @Component
 @SupportedTypes(FileType.XML)
@@ -125,7 +117,8 @@ class XmlStreamParser implements Parser {
                 "Expected '%s' but got '%s' instead.";
 
         @Override
-        public void accept(XMLStreamReader reader, Emitter<ProductCandidate> productEmitter) throws Exception {
+        public void accept(XMLStreamReader reader, Emitter<ProductCandidate> productEmitter)
+                throws XMLStreamException, IOException {
             if (hasNextStartElement(reader)) {
                 checkIfMatchingElementName(reader);
                 XmlProduct xmlProduct = xmlMapper.readValue(reader, XmlProduct.class);
